@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace data_stress
+namespace dstress
 {
     public class Program
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine("DSTRESS");
         }
     }
 }

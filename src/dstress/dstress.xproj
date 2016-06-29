@@ -7,8 +7,8 @@
 
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>3012e7aa-5da7-4986-bda8-f6aab59b1777</ProjectGuid>
-    <RootNamespace>data_stress</RootNamespace>
+    <ProjectGuid>c4ef1ed1-0ddc-4802-9d09-38839556ad68</ProjectGuid>
+    <RootNamespace>dstress</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
