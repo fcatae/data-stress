@@ -15,13 +15,15 @@ namespace Verification
         }
 
         [Fact]
-        public void A()
+        public void AA()
         {
             Assert.Equal( 1 + 1 , 2 );
+
+            var b = new dstress.InMemoryDataDriver();
         }
 
         [Fact]
-        void B()
+        void BB()
         {
 
 #if NET452
