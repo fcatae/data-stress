@@ -3,15 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Verification
 {
     public class Ghost
     {
-        [Fact]
-        public void C()
+        private readonly ITestOutputHelper output;
+
+        public Ghost(ITestOutputHelper output)
         {
-            System.Diagnostics.Debug.WriteLine("Hello world");
+            this.output = output;
+        }
+
+        [Fact]
+        public void CC()
+        {
+            output.WriteLine("Hello world");
+            System.Diagnostics.Debug.WriteLine("Time {0}", DateTime.Now);
         }
 
         [Fact]
