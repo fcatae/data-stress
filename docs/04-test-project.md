@@ -68,7 +68,7 @@ implementa o suporte a teste e a linha de comando.
 Não é necessário adicionar referência a "xunit.runner.visualstudio".
 
 
-## Passo 3: Adicionar os frameworks .NET Core e/ou Full
+## Passo 3: Adicionar os frameworks .NET Core ou Full
 
 Podemos adicionar suporte para testes nos diferentes frameworks. Adicionaremos 
 a versão 4.5.2 (dotnet-test-xunit requer >= 4.5.1). 
@@ -78,28 +78,6 @@ a versão 4.5.2 (dotnet-test-xunit requer >= 4.5.1).
 
     "netcoreapp1.0": { ... }
     "net452": { }
-```
-
-Quando ambos os frameworks são referenciados, o Visual Studio - Test Manager não
-funciona corretamente e retorna um erro:
-
-    Discovering tests in 'C:\Users\fabricio\Desktop\data-stress\test\Test-DataDriver\project.json' ["C:\Program Files\dotnet\dotnet.exe" test "C:\Users\fabricio\Desktop\data-stress\test\Test-DataDriver\project.json" --output "C:\Users\fabricio\Desktop\data-stress\test\Test-DataDriver\bin\Debug\net452\win7-x64" --port 59805 --parentProcessId 3676 --no-build]
-    Unable to start C:\Program Files\dotnet\dotnet.exe
-    dotnet-test Error: 0 : [ReportingChannel]: Waiting for message failed System.IO.IOException: Unable to read data from the transport connection: An established connection was aborted by the software in your host machine. ---> System.Net.Sockets.SocketException: An established connection was aborted by the software in your host machine
-
-Esse erro é causado porque dois processos tentam abrir a mesma porta TCP/IP.
-
-
-## (Bug: opcional): Solução de contorno para o bug System.Runtime
-
-Em algumas condições, o sistema gera erro de referência ao assembly do Runtime (PCL).
-
-```
-    "net452": {
-      "frameworkAssemblies": {
-        "System.Runtime": "4.0.0.0"
-      }
-    }
 ```
 
 
@@ -122,39 +100,67 @@ public class Teste
 ```
 
 
-Referência
-------------
+Usando os Framworks Core e Full
+--------------------------------
+
+Quando ambos os frameworks são referenciados, o Visual Studio - Test Manager não
+funciona corretamente e retorna um erro:
+
+    Discovering tests in 'C:\Users\fabricio\Desktop\data-stress\test\Test-DataDriver\project.json' ["C:\Program Files\dotnet\dotnet.exe" test "C:\Users\fabricio\Desktop\data-stress\test\Test-DataDriver\project.json" --output "C:\Users\fabricio\Desktop\data-stress\test\Test-DataDriver\bin\Debug\net452\win7-x64" --port 59805 --parentProcessId 3676 --no-build]
+    Unable to start C:\Program Files\dotnet\dotnet.exe
+    dotnet-test Error: 0 : [ReportingChannel]: Waiting for message failed System.IO.IOException: Unable to read data from the transport connection: An established connection was aborted by the software in your host machine. ---> System.Net.Sockets.SocketException: An established connection was aborted by the software in your host machine
+
+Esse erro é causado (aparentemente) porque dois processos tentam abrir a mesma porta TCP/IP.
+A melhor alternativa é criar um projeto com apenas um framework. Em seguida, cria-se um diretório
+chamado `build/` e adiciona um arquivo project.json com referências aos dois frameworks. Esse 
+build utiliza os arquivos .cs através de buildOptions->compile. 
+
 
 # project.json
 
 ```
-    {
-        "version": "1.0.0-*",
-        "testRunner": "xunit",
+{
+  "version": "1.0.0-*",
+  "testRunner": "xunit",
 
-        "dependencies": {
-            "xunit": "2.2.0-*",
-            "dotnet-test-xunit": "2.2.0-*"
-        },
+  "buildOptions": {
+    "compile": [ "../src/**/*.cs" ]
+  },
 
-        "frameworks": {
+  "dependencies": {
+    "xunit": "2.2.0-*",
+    "dotnet-test-xunit": "2.2.0-*"
+  },
 
-            "netcoreapp1.0": {
-                "dependencies": {
-                    "Microsoft.NETCore.App": {
-                    "type": "platform",
-                    "version": "1.0.0"
-                    }
-                },
-                "imports": "dnxcore50"
-            },
+  "frameworks": {
 
-            "net45": {
-                "frameworkAssemblies": {
-                    "System.Runtime": "4.0.0.0"
-                }
-            }
-
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.0"
         }
+      },
+      "imports": "dnxcore50"
+    },
+    "net452": {  }
+
+  }
+}
+```
+
+
+Anexo
+-------
+
+# (Bug): Solução de contorno para o bug System.Runtime
+
+Em algumas condições, o sistema gera erro de referência ao assembly do Runtime (PCL).
+
+```
+    "net452": {
+      "frameworkAssemblies": {
+        "System.Runtime": "4.0.0.0"
+      }
     }
 ```
