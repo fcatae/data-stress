@@ -4,25 +4,30 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Test_DataDriver
+namespace Verification
 {
-    public class Class1
+    public class Ghost
     {
         [Fact]
-        public void Teste1()
+        public void C()
         {
             System.Diagnostics.Debug.WriteLine("Hello world");
         }
 
         [Fact]
-        public void Somar()
+        public void A()
         {
             Assert.Equal( 1 + 1 , 2 );
         }
 
         [Fact]
-        void Teste2()
+        void B()
         {
+
+#if NET452
+            throw new Exception();
+#endif
+
         }
 
     }
