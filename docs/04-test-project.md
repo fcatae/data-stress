@@ -45,57 +45,63 @@ O projeto é uma mistura entre Application e Library: o projeto segue um templat
 aplicativo .NET Core, embora não existe um entry point implementado no nosso programa.
 Na realidade, o método `Main()` será implementado na biblioteca do xUnit.
 
-No arquivo project.json, precisamos adicionar uma linha de referência ao xUnit.
+No arquivo project.json, precisamos adicionar uma linha de referência ao xUnit. 
 
 ```
   "testRunner": "xunit",
 ```
 
+Esse comando indica que os testes rodaram a linha de comando: dotnet-test-xunit.
+
 ## Passo 2: Adicionar a dependência do xUnit
 
 Em seguida, adicionamos a referência ao `xunit` com versão >= 2.2. Essa biblioteca 
-implementa o suporte a testes.
+implementa o suporte a teste e a linha de comando.
 
 ```
   "dependencies": {
-    "xunit": "2.2.0-*"
+    "xunit": "2.2.0-*",
+    "dotnet-test-xunit": "2.2.0-*"
   },
 ```
 
-## Passo 3: Adicionar os frameworks .NET Core e Full
+Não é necessário adicionar referência a "xunit.runner.visualstudio".
 
-Podemos adicionar suporte para testes nos diferentes frameworks.
+
+## Passo 3: Adicionar os frameworks .NET Core e/ou Full
+
+Podemos adicionar suporte para testes nos diferentes frameworks. Adicionaremos 
+a versão 4.5.2 (dotnet-test-xunit requer >= 4.5.1). 
 
 ```
   "frameworks": {
 
-    "netcoreapp1.0": {
-        ...
-    },
-    "net45": { }
+    "netcoreapp1.0": { ... }
+    "net452": { }
 ```
 
-## Passo 4: Adicionar a linha de comando para .NET Core
+Quando ambos os frameworks são referenciados, o Visual Studio - Test Manager não
+funciona corretamente e retorna um erro:
 
-No caso do .NET Core, precisamos adicionar a linha de comando dotnet-test.
+    Discovering tests in 'C:\Users\fabricio\Desktop\data-stress\test\Test-DataDriver\project.json' ["C:\Program Files\dotnet\dotnet.exe" test "C:\Users\fabricio\Desktop\data-stress\test\Test-DataDriver\project.json" --output "C:\Users\fabricio\Desktop\data-stress\test\Test-DataDriver\bin\Debug\net452\win7-x64" --port 59805 --parentProcessId 3676 --no-build]
+    Unable to start C:\Program Files\dotnet\dotnet.exe
+    dotnet-test Error: 0 : [ReportingChannel]: Waiting for message failed System.IO.IOException: Unable to read data from the transport connection: An established connection was aborted by the software in your host machine. ---> System.Net.Sockets.SocketException: An established connection was aborted by the software in your host machine
+
+Esse erro é causado porque dois processos tentam abrir a mesma porta TCP/IP.
+
+
+## (Bug: opcional): Solução de contorno para o bug System.Runtime
+
+Em algumas condições, o sistema gera erro de referência ao assembly do Runtime (PCL).
 
 ```
-    "netcoreapp1.0": {
-        "dependencies": {
-          ...
-          "dotnet-test-xunit": "2.2.0-preview2-build1029"
-        },
-```
-
-## Passo 5: Solução de contorno para o bug System.Runtime
-
-```
-    "net45": {
+    "net452": {
       "frameworkAssemblies": {
         "System.Runtime": "4.0.0.0"
       }
     }
 ```
+
 
 # Testes Unitários
 
@@ -123,34 +129,32 @@ Referência
 
 ```
     {
-    "version": "1.0.0-*",
-    "testRunner": "xunit",
+        "version": "1.0.0-*",
+        "testRunner": "xunit",
 
-    "dependencies": {
-        "xunit": "2.2.0-*"
-    },
-
-    "frameworks": {
-
-        "netcoreapp1.0": {
         "dependencies": {
-            "Microsoft.NETCore.App": {
-            "type": "platform",
-            "version": "1.0.0"
+            "xunit": "2.2.0-*",
+            "dotnet-test-xunit": "2.2.0-*"
+        },
+
+        "frameworks": {
+
+            "netcoreapp1.0": {
+                "dependencies": {
+                    "Microsoft.NETCore.App": {
+                    "type": "platform",
+                    "version": "1.0.0"
+                    }
+                },
+                "imports": "dnxcore50"
             },
-            "dotnet-test-xunit": "2.2.0-preview2-build1029",
-        },
-        "imports": "dnxcore50"
-        },
 
-        "net45": {
-        "dependencies": {
-        },
-        "frameworkAssemblies": {
-            "System.Runtime": "4.0.0.0"
-        }
-        }
+            "net45": {
+                "frameworkAssemblies": {
+                    "System.Runtime": "4.0.0.0"
+                }
+            }
 
-    }
+        }
     }
 ```
