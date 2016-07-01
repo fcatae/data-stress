@@ -33,12 +33,7 @@ namespace Verification
 
         [Fact]
         void BB()
-        {
-
-#if NET452
-            throw new Exception();
-#endif
-
+        {            
         }
 
     }
