@@ -1,7 +1,16 @@
 ﻿{
   "version": "1.0.0-*",
+
   "buildOptions": {
-    "emitEntryPoint": true
+    "emitEntryPoint": true,
+    "copyToOutput": [ "config.default.json" ]
+  },
+  
+  "dependencies": {
+    "Microsoft.Extensions.Configuration": "1.0.0",
+    "Microsoft.Extensions.Configuration.CommandLine": "1.0.0",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
+    "Microsoft.Extensions.Configuration.UserSecrets": "1.0.0"
   },
 
   "frameworks": {
@@ -13,7 +22,9 @@
         }
       },
       "imports": "dnxcore50"
-    },
-    "net452": { }
-  }
+    }
+    ,
+    "net452": {}
+  },
+  "userSecretsId": "aspnet-dstress-20160702094745"
 }

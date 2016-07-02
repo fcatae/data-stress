@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "dstress": {
+      "commandName": "Project",
+      "commandLineArgs": "--hello \"My message: Hello World\"",
+      "environmentVariables": {
+        "dstress_hello2": "Value"
+      }
+    }
+  }
+}

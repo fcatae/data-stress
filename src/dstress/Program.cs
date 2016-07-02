@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace dstress
 {
@@ -10,6 +11,23 @@ namespace dstress
         public static void Main(string[] args)
         {
             Console.WriteLine("DSTRESS");
+
+            var builder = new ConfigurationBuilder()
+                .AddCommandLine(args)
+                .AddEnvironmentVariables("DSTRESS_")
+
+                .AddJsonFile("config.json", optional: true);
+
+            //.AddEnvironmentVariables()
+
+            builder.AddUserSecrets("aspnet-dstress-20160702094745");
+
+            var config = builder.Build();
+
+            Console.WriteLine(config["hello"]);
+            Console.WriteLine(config["hello2"]);
+
+            Console.ReadKey();
 
             CheckDataDriver(new InMemoryDataDriver());
         }
