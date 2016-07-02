@@ -116,7 +116,7 @@ embora o mais fácil seja incluir a linha de comando:
 
     builder.AddUserSecrets("aspnet-dstress-20160702094745");
 
-
+https://docs.asp.net/en/latest/security/app-secrets.html
 
 
 GetSection
